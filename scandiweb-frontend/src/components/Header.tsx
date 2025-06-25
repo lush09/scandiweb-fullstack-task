@@ -14,17 +14,12 @@ const Header = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const handleCategoryClick = (category: string) => {
-    navigate(`/category/${category.toLowerCase()}`);
-  };
   const handleLogoClick = () => {
-    navigate("/category/all");
+    navigate("/all");
   };
-  const getActiveCategory = () => {
-    const match = location.pathname.match(/\/category\/(\w+)/);
-    return match ? match[1].toLowerCase() : "women";
-  };
-  const activeCategory = getActiveCategory();
+
+  // Active category detection for root-level category routes
+  const activeCategory = location.pathname.split("/")[1] || "all";
 
   return (
     <header className="custom-header">
@@ -35,7 +30,7 @@ const Header = () => {
             return (
               <a
   key={cat.id}
-  href={`/category/${cat.name.toLowerCase()}` }
+  href={`/${cat.name.toLowerCase()}`}
   className={`header-link${isActive ? " active" : ""}`}
   style={{
     background: "none",
