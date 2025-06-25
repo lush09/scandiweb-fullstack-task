@@ -81,12 +81,7 @@ const typeDefs = gql`
 `;
 
 const resolvers = {
-  Query: { // existing query resolvers
-  },
-  Product: {
-    inStock: (parent) => parent.in_stock === 1 || parent.in_stock === true,
-    // Add other field mappings here if needed
-  },
+  Query: {
     hello: () => "Hello from GraphQL backend!",
     categories: async () => {
       const conn = await mysql.createConnection(dbConfig);
@@ -105,13 +100,21 @@ const resolvers = {
         [rows] = await conn.execute("SELECT * FROM products WHERE category_id = ?", [categoryId]);
       }
       await conn.end();
-      return rows;
+      // Map in_stock to inStock for GraphQL
+      return rows.map(product => ({
+        ...product,
+        inStock: product.in_stock,
+      }));
     },
     product: async (_, { id }) => {
       const conn = await mysql.createConnection(dbConfig);
       const [rows] = await conn.execute("SELECT * FROM products WHERE id = ?", [id]);
       await conn.end();
-      return rows[0];
+      if (!rows[0]) return null;
+      return {
+        ...rows[0],
+        inStock: rows[0].in_stock,
+      };
     },
   },
 };
