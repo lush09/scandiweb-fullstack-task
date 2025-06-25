@@ -44,7 +44,7 @@ const Header = () => {
     margin: 0,
     cursor: "pointer",
     textDecoration: "none",
-    color: "inherit"
+    
   }}
   data-testid={isActive ? "active-category-link" : "category-link"}
 >
