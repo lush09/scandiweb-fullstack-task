@@ -1,0 +1,61 @@
+.product-detail-description {
+  max-height: 180px;
+  overflow-y: auto;
+  padding: 1rem 0 0 0;
+}
+.product-detail-description::-webkit-scrollbar {
+  display: none;
+}
+.product-detail-description {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;     /* Firefox */
+}
+
+.gallery-thumbnails {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE 10+ */
+}
+.gallery-thumbnails::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
+
+.attr-btn-detail-description::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
+
+
+/* Optional: visually limit the whole info panel if needed */
+.attr-btn-info-panel {
+  max-width: 420px;
+  min-width: 280px;
+  overflow-wrap: break-word;
+}
+
+/* --- Generalized Attribute Button Styles --- */
+.attr-btn {
+  display: inline-block;
+  margin: 0 0.25em 0.5em 0;
+  padding: 0.5em 0;
+  border: 1px solid #1d1f22;
+  background: #fff;
+  color: #1d1f22;
+  font-size: 1em;
+  font-family: inherit;
+  text-align: center;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, border 0.2s;
+  min-width: 2.5em;
+  box-sizing: border-box;
+}
+.attr-btn.selected {
+  background: #1d1f22;
+  color: #fff;
+  border: 1.5px solid #000;
+}
+.attr-btn:disabled {
+  background: #eee;
+  color: #aaa;
+  border: 1px solid #ccc;
+  cursor: not-allowed;
+}
+
