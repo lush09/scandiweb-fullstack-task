@@ -227,9 +227,15 @@ const ProductDetailPage: React.FC = () => {
               className="product-detail-add-btn"
               data-testid="add-to-cart"
               onClick={handleAddToCart}
-              disabled={!product.inStock}
+              disabled={
+                !product.inStock ||
+                (product.attributes && product.attributes.some((attr: { name: string }) => !selectedAttributes[attr.name]))
+              }
               style={
-                !product.inStock ? { opacity: 0.5, cursor: "not-allowed" } : {}
+                !product.inStock ||
+                (product.attributes && product.attributes.some((attr: { name: string }) => !selectedAttributes[attr.name]))
+                  ? { opacity: 0.5, cursor: "not-allowed" }
+                  : {}
               }
             >
               {product.inStock ? "ADD TO CART" : "OUT OF STOCK"}

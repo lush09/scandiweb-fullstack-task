@@ -66,7 +66,7 @@ const Header = () => {
         <button
           className="header-cart"
           onClick={() => setCartOpen(true)}
-          data-testid="cart-button"
+          data-testid="cart-btn"
           aria-label="Open cart"
           style={{ background: "none", border: "none", position: "relative", cursor: "pointer" }}
         >

@@ -224,7 +224,23 @@ const CartOverlay: React.FC<CartOverlayProps> = ({
           <span>Total</span>
           <span>${total.toFixed(2)}</span>
         </div>
-        <button className="cart-overlay-place-order">PLACE ORDER</button>
+        <button
+  className="cart-overlay-place-order"
+  data-testid="place-order"
+  disabled={items.length === 0}
+  style={items.length === 0 ? { opacity: 0.5, cursor: 'not-allowed' } : {}}
+  onClick={() => {
+    if (items.length === 0) return;
+    // TODO: Call GraphQL mutation to insert order here
+    // For now, just clear the cart
+    if (typeof window !== 'undefined') {
+      window.localStorage.removeItem('cart');
+      window.location.reload(); // or ideally use your cart context's clearCart()
+    }
+  }}
+>
+  PLACE ORDER
+</button>
       </div>
     </div>
   );
