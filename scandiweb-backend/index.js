@@ -101,28 +101,103 @@ const resolvers = {
       }
       await conn.end();
       // Map in_stock to inStock for GraphQL
-      return rows.map(product => ({
+      // Helper to fetch prices for a product
+      async function getPricesForProduct(productId) {
+        const conn = await mysql.createConnection(dbConfig);
+        const [prices] = await conn.execute(
+          "SELECT currency, amount FROM prices WHERE product_id = ?",
+          [productId]
+        );
+        await conn.end();
+        return prices;
+      }
+
+      // Helper to fetch attributes (and items) for a product
+      async function getAttributesForProduct(productId) {
+        const conn = await mysql.createConnection(dbConfig);
+        // Get attributes for the product
+        const [attributes] = await conn.execute(
+          `SELECT a.id, a.name, a.type
+           FROM attributes a
+           JOIN product_attributes pa ON pa.attribute_id = a.id
+           WHERE pa.product_id = ?`,
+          [productId]
+        );
+        // For each attribute, get its items
+        for (const attr of attributes) {
+          const [items] = await conn.execute(
+            `SELECT ai.id, ai.value, ai.display_value
+             FROM attribute_items ai
+             WHERE ai.attribute_id = ?`,
+            [attr.id]
+          );
+          attr.items = items || [];
+        }
+        await conn.end();
+        return attributes;
+      }
+
+      return await Promise.all(rows.map(async (product) => ({
         ...product,
         inStock: product.in_stock,
         gallery: typeof product.gallery === 'string' ? JSON.parse(product.gallery) : product.gallery,
-      }));
+        prices: await getPricesForProduct(product.id),
+        attributes: await getAttributesForProduct(product.id) || [],
+      })));
     },
     product: async (_, { id }) => {
       const conn = await mysql.createConnection(dbConfig);
       const [rows] = await conn.execute("SELECT * FROM products WHERE id = ?", [id]);
       await conn.end();
       if (!rows[0]) return null;
+      // Helper to fetch prices for a product
+      async function getPricesForProduct(productId) {
+        const conn = await mysql.createConnection(dbConfig);
+        const [prices] = await conn.execute(
+          "SELECT currency, amount FROM prices WHERE product_id = ?",
+          [productId]
+        );
+        await conn.end();
+        return prices;
+      }
+
+      // Helper to fetch attributes (and items) for a product
+      async function getAttributesForProduct(productId) {
+        const conn = await mysql.createConnection(dbConfig);
+        // Get attributes for the product
+        const [attributes] = await conn.execute(
+          `SELECT a.id, a.name, a.type
+           FROM attributes a
+           JOIN product_attributes pa ON pa.attribute_id = a.id
+           WHERE pa.product_id = ?`,
+          [productId]
+        );
+        // For each attribute, get its items
+        for (const attr of attributes) {
+          const [items] = await conn.execute(
+            `SELECT ai.id, ai.value, ai.display_value
+             FROM attribute_items ai
+             WHERE ai.attribute_id = ?`,
+            [attr.id]
+          );
+          attr.items = items || [];
+        }
+        await conn.end();
+        return attributes;
+      }
+
       return {
         ...rows[0],
         inStock: rows[0].in_stock,
         gallery: typeof rows[0].gallery === 'string' ? JSON.parse(rows[0].gallery) : rows[0].gallery,
+        prices: await getPricesForProduct(rows[0].id),
+        attributes: await getAttributesForProduct(rows[0].id) || [],
       };
     },
   },
 };
 
 async function startServer() {
-  const app = express();
   const server = new ApolloServer({ typeDefs, resolvers });
   await server.start();
   server.applyMiddleware({ app, path: "/graphql" });
