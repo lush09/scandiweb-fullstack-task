@@ -32,6 +32,12 @@
 }
 
 /* --- Generalized Attribute Button Styles --- */
+.product-size-selector {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5em 0.25em;
+}
+
 .attr-btn {
   display: inline-block;
   margin: 0 0.25em 0.5em 0;
