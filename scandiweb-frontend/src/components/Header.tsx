@@ -103,7 +103,10 @@ const Header = () => {
       </div>
       <CartOverlay
         isOpen={cartOpen}
-        onClose={() => setCartOpen(false)}
+        onClose={() => {
+          console.log('CartOverlay onClose called');
+          setCartOpen(false);
+        }}
         items={cartItems}
       />
     </header>
