@@ -21,12 +21,10 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, highlight }) => {
     navigate(`/product/${product.id}`);
   };
 
-  // Utility to convert a string to kebab-case
   function toKebabCase(str: string) {
     return (
       str &&
       str
-        .replace(/([a-z])([A-Z])/g, "$1-$2")
         .replace(/[^a-zA-Z0-9]+/g, "-")
         .replace(/^-+|-+$/g, "")
         .toLowerCase()

@@ -36,6 +36,15 @@ const CartOverlay: React.FC<CartOverlayProps> = ({
   onClose,
   items,
 }) => {
+  // Close on Escape key
+  React.useEffect(() => {
+    if (!isOpen) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isOpen, onClose]);
   const { updateQuantity, removeFromCart } = useCart();
   React.useEffect(() => {
     if (isOpen) {
@@ -47,21 +56,20 @@ const CartOverlay: React.FC<CartOverlayProps> = ({
       document.body.classList.remove("no-scroll");
     };
   }, [isOpen]);
-  // For demo, fetch all products in the 'all' category (could be optimized to fetch only needed products)
+
   const { data: productsData } = useQuery(GET_PRODUCTS_BY_CATEGORY, {
     variables: { categoryId: "all" },
     skip: !isOpen,
   });
   const products = productsData?.products || [];
 
-  if (!isOpen) return null; // Unmount overlay so it is truly hidden
+  if (!isOpen) return null;
   const total = items.reduce(
     (acc, item) =>
       acc + parseFloat(item.price.replace(/[^\d.]/g, "")) * item.quantity,
     0,
   );
 
-  // Helper to get unique key for cart item (id + all attribute values)
   const getCartKey = (item: CartItem) => {
     const attrKey = item.attributes
       ? Object.entries(item.attributes)
@@ -231,11 +239,9 @@ const CartOverlay: React.FC<CartOverlayProps> = ({
   style={items.length === 0 ? { opacity: 0.5, cursor: 'not-allowed' } : {}}
   onClick={() => {
     if (items.length === 0) return;
-    // TODO: Call GraphQL mutation to insert order here
-    // For now, just clear the cart
     if (typeof window !== 'undefined') {
       window.localStorage.removeItem('cart');
-      window.location.reload(); // or ideally use your cart context's clearCart()
+      window.location.reload();
     }
   }}
 >
