@@ -160,6 +160,7 @@ const ProductDetailPage: React.FC = () => {
                       </div>
                       <div
                         className="product-color-selector"
+                        data-testid="product-attribute-color"
                       >
                         {attr.items.map((item: any, idx: number) => (
                           <button
