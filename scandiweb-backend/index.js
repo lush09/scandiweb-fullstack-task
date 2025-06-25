@@ -1,20 +1,86 @@
 import express from "express";
-import { ApolloServer } from "apollo-server-express";
+import { ApolloServer, gql } from "apollo-server-express";
+import mysql from "mysql2/promise";
 import dotenv from "dotenv";
 
-// Load environment variables
 dotenv.config();
 
-const typeDefs = `
+// MySQL connection
+const dbConfig = {
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
+  port: process.env.DB_PORT || 3306,
+};
+
+// Example schema matching your frontend's needs
+const typeDefs = gql`
   type Query {
     hello: String
+    categories: [Category]
+    products(categoryId: String!): [Product]
+    product(id: String!): Product
+  }
+
+  type Category {
+    id: ID!
+    name: String!
+  }
+
+  type Product {
+    id: ID!
+    name: String!
+    brand: String!
+    inStock: Boolean!
+    gallery: [String!]!
+    description: String!
+    category_id: String!
+    prices: [Price!]!
+    attributes: [Attribute!]!
+  }
+
+  type Price {
+    currency: String!
+    amount: Float!
+  }
+
+  type Attribute {
+    id: ID!
+    name: String!
+    type: String!
+    items: [AttributeItem!]!
+  }
+
+  type AttributeItem {
+    id: ID!
+    value: String!
+    display_value: String
   }
 `;
 
 const resolvers = {
   Query: {
-    hello: () => "Hello from GraphQL backend!"
-  }
+    hello: () => "Hello from GraphQL backend!",
+    categories: async () => {
+      const conn = await mysql.createConnection(dbConfig);
+      const [rows] = await conn.execute("SELECT id, name FROM categories");
+      await conn.end();
+      return rows;
+    },
+    products: async (_, { categoryId }) => {
+      const conn = await mysql.createConnection(dbConfig);
+      const [rows] = await conn.execute("SELECT * FROM products WHERE category_id = ?", [categoryId]);
+      await conn.end();
+      return rows;
+    },
+    product: async (_, { id }) => {
+      const conn = await mysql.createConnection(dbConfig);
+      const [rows] = await conn.execute("SELECT * FROM products WHERE id = ?", [id]);
+      await conn.end();
+      return rows[0];
+    },
+  },
 };
 
 async function startServer() {
@@ -23,7 +89,7 @@ async function startServer() {
   await server.start();
   server.applyMiddleware({ app, path: "/graphql" });
 
-  const PORT = process.env.PORT || 8000;
+  const PORT = process.env.PORT || 10000;
   app.listen(PORT, () => {
     console.log(`Server running at http://localhost:${PORT}${server.graphqlPath}`);
   });
