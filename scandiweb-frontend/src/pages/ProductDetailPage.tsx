@@ -204,6 +204,7 @@ const ProductDetailPage: React.FC = () => {
                             key={`${attr.id}-${item.value}-${idx}`}
                             className={`attr-btn${selectedAttributes[attr.name] === item.value ? " selected" : ""}`}
                             style={{ width: btnWidth }}
+                            data-testid={`product-attribute-${toKebabCase(attr.name)}-${item.value}`}
                             onClick={() =>
                               setSelectedAttributes((prev) => ({
                                 ...prev,
