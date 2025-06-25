@@ -13,6 +13,7 @@ function toKebabCase(str: string) {
     str
       .replace(/[^a-zA-Z0-9]+/g, "-") // replace spaces and special chars with dash
       .replace(/^-+|-+$/g, "")        // trim leading/trailing dashes
+      .toLowerCase()
   );
 }
 
