@@ -94,10 +94,20 @@ const resolvers = {
       const conn = await mysql.createConnection(dbConfig);
       let rows;
       // If 'all' category or id '1' is requested, return all products
-      if (categoryId === "1" || categoryId === "all") {
+      let categoryQueryId = categoryId;
+      if (categoryId !== "1" && categoryId !== "all") {
+        // If categoryId is a name, get the actual ID
+        const catConn = await mysql.createConnection(dbConfig);
+        const [catRows] = await catConn.execute("SELECT id FROM categories WHERE name = ?", [categoryId]);
+        await catConn.end();
+        if (catRows.length > 0) {
+          categoryQueryId = catRows[0].id;
+        }
+      }
+      if (categoryQueryId === "1" || categoryQueryId === "all") {
         [rows] = await conn.execute("SELECT * FROM products");
       } else {
-        [rows] = await conn.execute("SELECT * FROM products WHERE category_id = ?", [categoryId]);
+        [rows] = await conn.execute("SELECT * FROM products WHERE category_id = ?", [categoryQueryId]);
       }
       await conn.end();
       // Map in_stock to inStock for GraphQL
