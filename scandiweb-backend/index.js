@@ -2,6 +2,7 @@ import express from "express";
 import { ApolloServer, gql } from "apollo-server-express";
 import mysql from "mysql2/promise";
 import dotenv from "dotenv";
+import cors from "cors";
 
 dotenv.config();
 
@@ -13,6 +14,26 @@ const dbConfig = {
   database: process.env.DB_NAME,
   port: process.env.DB_PORT || 3306,
 };
+
+// CORS setup to allow only Vercel frontend
+const allowedOrigins = [
+  "https://scandiweb-fullstack-task-snf4.vercel.app"
+];
+
+const corsOptions = {
+  origin: function (origin, callback) {
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  credentials: true
+};
+
+const app = express();
+app.use(cors(corsOptions));
 
 // Example schema matching your frontend's needs
 const typeDefs = gql`
@@ -68,9 +89,16 @@ const resolvers = {
       await conn.end();
       return rows;
     },
+    // Enhanced products resolver to support 'all' category and correct categoryId matching
     products: async (_, { categoryId }) => {
       const conn = await mysql.createConnection(dbConfig);
-      const [rows] = await conn.execute("SELECT * FROM products WHERE category_id = ?", [categoryId]);
+      let rows;
+      // If 'all' category or id '1' is requested, return all products
+      if (categoryId === "1" || categoryId === "all") {
+        [rows] = await conn.execute("SELECT * FROM products");
+      } else {
+        [rows] = await conn.execute("SELECT * FROM products WHERE category_id = ?", [categoryId]);
+      }
       await conn.end();
       return rows;
     },
