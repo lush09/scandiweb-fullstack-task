@@ -160,10 +160,10 @@ const ProductDetailPage: React.FC = () => {
                       </div>
                       <div
                         className="product-color-selector"
-                        data-testid={`product-attribute-${toKebabCase(attr.name)}`}
                       >
                         {attr.items.map((item: any, idx: number) => (
                           <button
+                            data-testid={`product-attribute-color-${item.value}`}
                             key={item.id || item.value + "-" + idx}
                             className={`color-btn${selectedAttributes[attr.name] === item.value ? " selected" : ""}`}
                             style={{
