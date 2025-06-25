@@ -35,7 +35,7 @@ const Header = () => {
             return (
               <a
   key={cat.id}
-  href={cat.name.toLowerCase() === "all" ? "/all" : `/category/${cat.name.toLowerCase()}`}
+  href={`/category/${cat.name.toLowerCase()}` }
   className={`header-link${isActive ? " active" : ""}`}
   style={{
     background: "none",
