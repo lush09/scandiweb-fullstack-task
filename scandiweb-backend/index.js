@@ -104,6 +104,7 @@ const resolvers = {
       return rows.map(product => ({
         ...product,
         inStock: product.in_stock,
+        gallery: typeof product.gallery === 'string' ? JSON.parse(product.gallery) : product.gallery,
       }));
     },
     product: async (_, { id }) => {
@@ -114,6 +115,7 @@ const resolvers = {
       return {
         ...rows[0],
         inStock: rows[0].in_stock,
+        gallery: typeof rows[0].gallery === 'string' ? JSON.parse(rows[0].gallery) : rows[0].gallery,
       };
     },
   },
