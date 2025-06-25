@@ -88,9 +88,11 @@ const CartOverlay: React.FC<CartOverlayProps> = ({
     }
   };
 
+  if (!isOpen) return null;
+
   return (
     <div className="cart-overlay-backdrop" onClick={onClose}>
-      <div className="cart-overlay" data-testid="cart-overlay" onClick={(e) => e.stopPropagation()}>
+      <div className="cart-overlay" data-testid="cart-overlay" onClick={e => e.stopPropagation()}>
         <button className="cart-overlay-close" onClick={onClose}>
           &times;
         </button>
