@@ -1,0 +1,21 @@
+Array
+(
+    [0] => Array
+        (
+            [id] => 1
+            [name] => all
+        )
+
+    [1] => Array
+        (
+            [id] => 2
+            [name] => clothes
+        )
+
+    [2] => Array
+        (
+            [id] => 3
+            [name] => tech
+        )
+
+)
