@@ -54,7 +54,7 @@ const CartOverlay: React.FC<CartOverlayProps> = ({
   });
   const products = productsData?.products || [];
 
-  if (!isOpen) return null;
+  if (!isOpen) return null; // Unmount overlay so it is truly hidden
   const total = items.reduce(
     (acc, item) =>
       acc + parseFloat(item.price.replace(/[^\d.]/g, "")) * item.quantity,

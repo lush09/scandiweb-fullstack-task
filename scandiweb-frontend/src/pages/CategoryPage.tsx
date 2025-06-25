@@ -8,7 +8,8 @@ import { GET_PRODUCTS_BY_CATEGORY } from "../graphql/queries";
 const CategoryPage: React.FC = () => {
   const { categoryName = "women" } = useParams();
   const { data, loading, error } = useQuery(GET_PRODUCTS_BY_CATEGORY, {
-    variables: { categoryId: categoryName },
+    variables: categoryName === "all" ? {} : { categoryId: categoryName },
+    skip: !categoryName,
   });
 
   if (loading)
