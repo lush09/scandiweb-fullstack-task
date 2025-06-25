@@ -57,12 +57,19 @@ const Header = () => {
           <button
             className="logo-btn"
             onClick={handleLogoClick}
-            data-testid="cart-btn"
+            data-testid="logo-btn"
+            aria-label="Go to home"
           >
             <img src={logo} alt="Logo" />
           </button>
         </div>
-        <div className="header-cart" onClick={() => setCartOpen(true)}>
+        <button
+          className="header-cart"
+          onClick={() => setCartOpen(true)}
+          data-testid="cart-button"
+          aria-label="Open cart"
+          style={{ background: "none", border: "none", position: "relative", cursor: "pointer" }}
+        >
           <svg
             width="24"
             height="24"
@@ -97,7 +104,7 @@ const Header = () => {
               {cartItems.length}
             </span>
           )}
-        </div>
+        </button>
       </div>
       <CartOverlay
         isOpen={cartOpen}
