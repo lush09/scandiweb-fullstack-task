@@ -81,7 +81,12 @@ const typeDefs = gql`
 `;
 
 const resolvers = {
-  Query: {
+  Query: { // existing query resolvers
+  },
+  Product: {
+    inStock: (parent) => parent.in_stock === 1 || parent.in_stock === true,
+    // Add other field mappings here if needed
+  },
     hello: () => "Hello from GraphQL backend!",
     categories: async () => {
       const conn = await mysql.createConnection(dbConfig);
