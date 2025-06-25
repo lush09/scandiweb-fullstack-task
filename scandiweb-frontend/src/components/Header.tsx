@@ -33,23 +33,23 @@ const Header = () => {
           {data?.categories.map((cat: { id: string; name: string }) => {
             const isActive = activeCategory === cat.name.toLowerCase();
             return (
-              <button
-                key={cat.id}
-                className={`header-link${isActive ? " active" : ""}`}
-                onClick={() => handleCategoryClick(cat.name)}
-                style={{
-                  background: "none",
-                  border: "none",
-                  padding: 0,
-                  margin: 0,
-                  cursor: "pointer",
-                }}
-                data-testid={
-                  isActive ? "active-category-link" : "category-link"
-                }
-              >
-                {cat.name.toUpperCase()}
-              </button>
+              <a
+  key={cat.id}
+  href={cat.name.toLowerCase() === "all" ? "/all" : `/category/${cat.name.toLowerCase()}`}
+  className={`header-link${isActive ? " active" : ""}`}
+  style={{
+    background: "none",
+    border: "none",
+    padding: 0,
+    margin: 0,
+    cursor: "pointer",
+    textDecoration: "none",
+    color: "inherit"
+  }}
+  data-testid={isActive ? "active-category-link" : "category-link"}
+>
+  {cat.name.toUpperCase()}
+</a>
             );
           })}
         </nav>
