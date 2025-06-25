@@ -1,9 +1,10 @@
 import { ApolloClient, InMemoryCache } from "@apollo/client";
 
-console.log("GraphQL API:", import.meta.env.VITE_GRAPHQL_API);
+const apiUrl = import.meta.env.VITE_GRAPHQL_API || "NO_ENV_SET";
+console.log("GraphQL API endpoint in use:", apiUrl);
 
 const client = new ApolloClient({
-  uri: import.meta.env.VITE_GRAPHQL_API,
+  uri: apiUrl,
   cache: new InMemoryCache(),
 });
 
