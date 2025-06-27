@@ -2,15 +2,14 @@ import "../index.css";
 import logo from "../assets/logo.png";
 import CartOverlay from "./CartOverlay";
 import { useCart } from "../context/CartContext";
-import { useQuery } from "@apollo/client";
-import { GET_CATEGORIES } from "../graphql/queries";
+import { useCategoryContext } from "../context/CategoryContext";
 import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
 const Header = () => {
   const [cartOpen, setCartOpen] = useState(false);
   const { cartItems } = useCart();
-  const { data } = useQuery(GET_CATEGORIES);
+  const { categories, loading } = useCategoryContext();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -25,7 +24,7 @@ const Header = () => {
     <header className="custom-header">
       <div className="container header-inner">
         <nav className="header-categories">
-          {data?.categories.map((cat: { id: string; name: string }) => {
+          {categories.map((cat: { id: string; name: string }) => {
             const isActive = activeCategory === cat.name.toLowerCase();
             return (
               <a
